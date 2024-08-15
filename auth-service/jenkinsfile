@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/kullaniciadi/ecommerce-app.git'
+            }
+        }
+        stage('Build Docker Images') {
+            steps {
+                sh 'docker build -t auth-service:latest auth-service'
+                sh 'docker build -t product-service:latest product-service'
+            }
+        }
+        stage('Deploy to Docker Swarm') {
+            steps {
+                sh 'docker stack deploy -c docker-compose.yml ecommerce'
+            }
+        }
+    }
+}
